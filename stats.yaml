@@ -1,0 +1,24 @@
+node:
+  id: localhost
+
+admin:
+  access_log_path: admin_access.log
+  address: { socket_address: { address: 127.0.0.1, port_value: 4993 } }
+
+static_resources:
+  clusters:
+  - name: metrics_service
+    connect_timeout: { seconds: 1 }
+    type: STATIC
+    hosts:
+    - socket_address: {address: 127.0.0.1, port_value: 4994}
+    lb_policy: ROUND_ROBIN
+    http2_protocol_options: {}
+
+stats_flush_interval: 1s
+stats_sinks:
+- name: "envoy.metrics_service"
+  config:
+    grpc_service:
+      envoy_grpc:
+        cluster_name: metrics_service
